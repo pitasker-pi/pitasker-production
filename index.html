@@ -3,47 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PiTasker - Earn Pi for Tasks</title>
-    <!-- Pi SDK MUST be loaded first -->
+    <title>PiTasker | Earn Pi for Completing Tasks</title>
+    <!-- Pi SDK (MUST be first script) -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script>
-        // Critical sandbox setup (must come before any Pi calls)
-        window.Pi = { sandbox: true }; // Force sandbox mode
-        
-        // Initialize Pi SDK after DOM loads
-        document.addEventListener('DOMContentLoaded', function() {
-            Pi.init({
-                version: "2.0",
-                onReady: function() {
-                    console.log("Pi SDK ready in sandbox mode!");
-                    document.getElementById('pi-auth-button').style.display = 'block';
-                }
-            });
-        });
-    </script>
     <style>
-        #pi-auth-button { display: none; margin: 20px; padding: 10px; background: #F7931A; color: white; border: none; border-radius: 5px; }
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #pi-auth-button {
+            background: #F7931A; /* Pi orange */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        .task-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
-    <h1>PiTasker Sandbox</h1>
-    <p>Test task platform for Pi Network</p>
+    <h1>Welcome to PiTasker</h1>
+    <p>Earn Pi coins by completing micro-tasks</p>
     
-    <!-- Sandbox Test Button -->
-    <button id="pi-auth-button" onclick="Pi.authenticate(['username','payments'], onAuth)">
-        Connect Pi Wallet (Sandbox)
-    </button>
+    <!-- Pi Wallet Connection -->
+    <button id="pi-auth-button" onclick="connectPi()">Connect Pi Wallet</button>
+    
+    <!-- Task Listing (Example) -->
+    <div class="task-card">
+        <h3>Design a Logo (50 Pi)</h3>
+        <p>Need a logo for my Pi project</p>
+        <button onclick="applyTask(1)">Apply</button>
+    </div>
 
     <script>
-        // Authentication callback
-        function onAuth(auth) {
-            console.log("Auth successful!", auth);
-            alert(`Connected to Pi Wallet!\nUser: ${auth.user.username}\nSandbox: ${Pi.sandbox}`);
-        }
+        // Initialize Pi SDK for PRODUCTION
+        window.Pi = { sandbox: false }; // Critical for mainnet
         
-        // Debug output
-        console.log("Current Pi config:", window.Pi);
+        function connectPi() {
+            Pi.authenticate(['username', 'payments'], function(auth) {
+                console.log("Pi User:", auth.user);
+                document.getElementById('pi-auth-button').textContent = `Connected: ${auth.user.username}`;
+            });
+        }
+
+        function applyTask(taskId) {
+            if (!window.Pi.authenticated) {
+                alert("Please connect your Pi Wallet first!");
+                return;
+            }
+            console.log(`Applying for task ${taskId}`);
+            // Add your task application logic here
+        }
     </script>
 </body>
 </html>
